@@ -22,7 +22,7 @@ class LRU():
         assert size >0, "Invalid size given"
         self.dict={}
         self.size=size
-        
+        self.cache_miss=0
         self.track=[]
     def put(self,key,item):
         l=lenght(self.dict)
@@ -33,11 +33,13 @@ class LRU():
                 self.track=addList(self.track,key)
                 self.dict.pop(key)
             else: 
+              self.cache_miss+=1
               x=self.track.pop(0)
               self.dict.pop(x)
             self.dict=updated(self.dict,{key:item})
             
         else:
+            self.cache_miss+=1
             self.dict=updated(self.dict,{key:item})
         self.track=addList(self.track,key)
 
@@ -49,7 +51,8 @@ class LRU():
             self.track.remove(key)
             self.track=addList(self.track,key)
             return  dicGet(key,self.dict)
-        else: 
+        else:
+            self.cache_miss+=1 
             return -1 
     def __str__(self):
     
@@ -69,23 +72,17 @@ for i in range(50):
     l1.put(i,i)
 print(l1)  
 print("reteriving odd numbers:")
-for i in range(50):
-    if i %2 != 0:
+for i in range(1,25,2):
         (l1.get(i)) 
 print(l1) 
 
 print("Inserting prime numbers:")
-for i in [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]:
+k=[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+for i in k:
         l1.put(i,i)
 print(l1)        
-cache_missed=0
-cache_hit=0       
-for i in range(101):
-    if l1.get(i) == -1 :
-        cache_missed +=1
-    else:
-        cache_hit+=1  
-print("Miss rate = ",cache_missed/101*100)   
+ 
+print("Miss rate = ",l1.cache_miss)   
              
 
     
